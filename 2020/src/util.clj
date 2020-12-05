@@ -1,5 +1,6 @@
 (ns util
   (:require
+   [clojure.pprint :refer [pprint]]
    [clojure.string :as string]
    [clojure.stacktrace :as stacktrace]))
 
@@ -54,5 +55,5 @@
 
 (defn spy [x]
   (println "spying:")
-  (clojure.pprint/pprint x)
+  (pprint x)
   x)
