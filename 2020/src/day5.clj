@@ -20,22 +20,6 @@
                                  [lo mid]
                                  [(inc mid) hi])))))))
 
-#_(defn compute-row
-    [pass]
-    (loop [cs (take 7 pass)
-           [lo hi] [0 127]]
-      (let [c (first cs)
-            cs (rest cs)
-            lower? (= \F c)]
-        (if (empty? cs)
-          (if lower? lo hi)
-          (let
-           [mid (int (- hi (/ (- hi lo) 2)))]
-            (recur
-             cs (if lower?
-                  [lo mid]
-                  [(inc mid) hi])))))))
-
 (defn compute-seat-id
   [pass]
   (-> (binary-space-partition (take 7 pass) #{\F})
