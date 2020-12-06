@@ -19,6 +19,14 @@
    (cond-> (slurp (str "resources/" file))
      (:split-lines opts) (string/split-lines))))
 
+(defn partition-lines
+  ([lines]
+   (partition-lines lines {:delimiter ""}))
+  ([lines {:keys [delimiter]}]
+   (->> lines
+        (partition-by (partial = delimiter))
+        (remove (partial = (list delimiter))))))
+
 ;; logic
 
 (defn xor
