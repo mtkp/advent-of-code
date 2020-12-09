@@ -46,18 +46,28 @@
     (with-out-str
       (stacktrace/print-stack-trace e))))
 
+(defn run-error?
+  [o]
+  (instance? RunError o))
+
 (defmacro defrun
   [n & body]
   `(defn ~n
-     ([]
-      (let [ns# ~(do *ns*)
-            _# (print (format "Running %s -- %s\n> " (.getName ns#) ~(str n)))
+     ([] (~n {}))
+     ([opts#]
+      (let [report# (get opts# :report? true)
+            ns# ~(do *ns*)
+            _# (when report#
+                 (print (format "Running %s -- %s\n> " (.getName ns#) ~(str n))))
             res# (try
                    (do ~@body)
                    (catch Exception e#
                      (->RunError e#)))]
-        (println (format "%s" res#))))
-     ([_#] (~n))))
+        (if report#
+          (println (format "%s" res#))
+          (if (run-error? res#)
+            (throw (:e res#))
+            res#))))))
 
 ;; debugging 
 
@@ -65,3 +75,18 @@
   (println "spying:")
   (pprint x)
   x)
+
+;; data structues
+
+(defn queue
+  ([] (clojure.lang.PersistentQueue/EMPTY))
+  ([coll]
+   (reduce conj clojure.lang.PersistentQueue/EMPTY coll)))
+
+(defn min-element
+  [coll]
+  (apply min coll))
+
+(defn max-element
+  [coll]
+  (apply max coll))
